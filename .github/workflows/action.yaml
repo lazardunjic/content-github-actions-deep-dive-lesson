@@ -8,24 +8,30 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Check out code
-        uses: actions/checkout@v2
-      - name: Set up python
-        uses: actions/setup-python@v2
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          python-version: 3.8
+          python-version: "3.8"
+
       - name: Install libraries
+        working-directory: function
         run: |
-            cd function
-            python -m -pip install --upgrade pip
-            if [ -f requirements.txt]; then pip install -r requirements.txt -t .; fi
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt -t .
+          fi
+
       - name: Create zip bundle
-        run:  |
-            cd function
-            zip -r ../${{ github.sha }}.zip .
+        working-directory: function
+        run: zip -r "../${{ github.sha }}.zip" .
+
       - name: Archive artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
-          name: zipped-bundle 
+          name: zipped-bundle
           path: ${{ github.sha }}.zip
