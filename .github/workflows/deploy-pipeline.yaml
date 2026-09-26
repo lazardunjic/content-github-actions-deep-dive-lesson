@@ -1,4 +1,4 @@
-name: Deploy Lambda Function
+how to create name: Deploy Lambda Function
 on: [push]
 
 jobs:
@@ -44,3 +44,18 @@ jobs:
         with:
           name: zipped-bundle
           path: ${{ github.sha }}.zip
+
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create release
+        id: create_release
+        uses: actions/create_release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.github_token }}
+        with:
+          tag_name: ${{ github.run_number }}
+          release_name: Release ${{ github.run_number }}
+          body: New release for ${{ github.sha }}. Release notes in docs.
+          draft: false
+          prerelease: false
